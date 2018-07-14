@@ -69,7 +69,7 @@ quit_server() {
     echo "Stopping DOL Server..."
     tmux send-keys -t dolserver "exit" Enter
     MAX_WAIT=30
-    while [ "$MAX_WAIT" -gt 0 ] && [ -n "$(pgrep mono-sgen)" ]; do
+    while [ "$MAX_WAIT" -gt 0 ] && [ -n "$(pgrep -f mono-sgen)" ]; do
         echo "Waiting for DOL Server to stop..."
 	sleep 1
 	MAX_WAIT=$(( MAX_WAIT - 1 ))
