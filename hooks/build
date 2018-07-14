@@ -4,7 +4,7 @@
 
 SOURCE_COMMIT="$(git rev-parse --short HEAD)"
 
-BUILD_VERSION="latest"
+BUILD_VERSION=$(curl -s "$DOL_GITHUB_API_URL" |  jq -r ".name")
 
 echo "Hook Build with values: VCS_REF:$SOURCE_COMMIT, BUILD_VERSION:$BUILD_VERSION, IMAGE_NAME:$IMAGE_NAME"
 docker build \
