@@ -4,7 +4,7 @@
 
 SOURCE_COMMIT="$(git rev-parse --short HEAD)"
 
-BUILD_VERSION=$(curl -s "$DOL_GITHUB_API_URL" |  jq -r ".name")
+BUILD_VERSION="$(curl -s "https://api.github.com/repos/Dawn-of-Light/DOLSharp/releases/latest" | sed -n 's/.*"tag_name": "\([0-9.]\+\)".*/\1/p')"
 
 echo "Hook Build with values: VCS_REF:$SOURCE_COMMIT, BUILD_VERSION:$BUILD_VERSION, IMAGE_NAME:$IMAGE_NAME"
 docker build \
