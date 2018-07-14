@@ -18,6 +18,7 @@ RUN set -ex; \
     # Set Constants
     DOL_ARCHIVE_NAME="DOLServer_linux_net45_Release.zip"; \
     DOL_GITHUB_API_URL="https://api.github.com/repos/Dawn-of-Light/DOLSharp/releases/latest"; \
+    [ "$BUILD_VERSION" != "latest" ] && DOL_GITHUB_API_URL="https://api.github.com/repos/Dawn-of-Light/DOLSharp/releases/tags/$BUILD_VERSION"; \
     # Install Build Dependencies
     apt-get update; \
     BUILD_DEPS=" \
@@ -27,10 +28,7 @@ RUN set -ex; \
         "; \
     apt-get install --no-install-recommends -y $BUILD_DEPS tmux; \
     # Get DOL Release
-    DOL_RELEASE_CONTENT="$(curl -s "$DOL_GITHUB_API_URL")"; \
-    DOL_RELEASE_NAME="$(echo "$DOL_RELEASE_CONTENT" | jq -r ".name")"; \
-    echo "Building with DOL Release $DOL_RELEASE_NAME"; \
-    DOL_LATEST_RELEASE_URL=$(echo "$DOL_RELEASE_CONTENT" |  jq -r ".assets[] | select(.name == \"$DOL_ARCHIVE_NAME\") | .browser_download_url"); \
+    DOL_LATEST_RELEASE_URL=$(curl -s "$DOL_GITHUB_API_URL" |  jq -r ".assets[] | select(.name == \"$DOL_ARCHIVE_NAME\") | .browser_download_url"); \
     curl -L -o /DOLServer_linux_net45_Release.zip "$DOL_LATEST_RELEASE_URL"; \
     unzip "/$DOL_ARCHIVE_NAME" -d /dawn-of-light; \
     # Cleanup Download
