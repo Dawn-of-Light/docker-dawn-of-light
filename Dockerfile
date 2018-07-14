@@ -1,4 +1,4 @@
-FROM mono:slim
+FROM mono:latest
 
 ARG BUILD_DATE=now
 ARG VCS_REF=local
@@ -25,7 +25,7 @@ RUN set -ex; \
         unzip \
         jq \
         "; \
-    apt-get install --no-install-recommends -y $BUILD_DEPS; \
+    apt-get install --no-install-recommends -y $BUILD_DEPS tmux; \
     # Get DOL Release
     DOL_RELEASE_CONTENT="$(curl -s "$DOL_GITHUB_API_URL")"; \
     DOL_RELEASE_NAME="$(echo "$DOL_RELEASE_CONTENT" | jq -r ".name")"; \
