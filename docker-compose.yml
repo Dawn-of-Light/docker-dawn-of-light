@@ -1,0 +1,8 @@
+version: '2'
+services:
+  dawn-of-light:
+    mem_limit: 256M
+    build: ./
+    ports:
+     - 10300:10300/tcp
+     - 10400:10400/udp
