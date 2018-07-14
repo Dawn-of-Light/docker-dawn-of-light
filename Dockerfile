@@ -1,4 +1,4 @@
-FROM alpine:edge
+FROM mono:slim
 
 ARG BUILD_DATE=now
 ARG VCS_REF=local
@@ -14,23 +14,33 @@ LABEL org.label-schema.build-date=$BUILD_DATE \
       org.label-schema.schema-version="1.0.0-rc1" \
       maintainer="Leodagan <leodagan@freyad.net>"
 
-
 RUN set -ex; \
+    # Set Constants
     DOL_ARCHIVE_NAME="DOLServer_linux_net45_Release.zip"; \
     DOL_GITHUB_API_URL="https://api.github.com/repos/Dawn-of-Light/DOLSharp/releases/latest"; \
-    echo "@testing http://dl-4.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories; \
-    apk update; \
-    apk add --no-cache --update \
-        mono@testing tmux; \
-    apk add --no-cache --update --virtual .build_dependencies \
-        curl jq unzip ca-certificates; \
-    update-ca-certificates; \
-    DOL_LATEST_RELEASE_URL=$(curl -s "$DOL_GITHUB_API_URL" |  jq -r ".assets[] | select(.name == \"$DOL_ARCHIVE_NAME\") | .browser_download_url"); \
+    # Install Build Dependencies
+    apt-get update; \
+    BUILD_DEPS=" \
+        curl \
+        unzip \
+        jq \
+        "; \
+    apt-get install --no-install-recommends -y $BUILD_DEPS; \
+    # Get DOL Release
+    DOL_RELEASE_CONTENT="$(curl -s "$DOL_GITHUB_API_URL")"; \
+    DOL_RELEASE_NAME="$(echo "$DOL_RELEASE_CONTENT" | jq -r ".name")"; \
+    echo "Building with DOL Release $DOL_RELEASE_NAME"; \
+    DOL_LATEST_RELEASE_URL=$(echo "$DOL_RELEASE_CONTENT" |  jq -r ".assets[] | select(.name == \"$DOL_ARCHIVE_NAME\") | .browser_download_url"); \
     curl -L -o /DOLServer_linux_net45_Release.zip "$DOL_LATEST_RELEASE_URL"; \
     unzip "/$DOL_ARCHIVE_NAME" -d /dawn-of-light; \
+    # Cleanup Download
     rm -f "/$DOL_ARCHIVE_NAME"; \
-    apk del .build_dependencies; \
-    rm -rf /var/cache/* /tmp/* /var/log/* ~/.cache; \
+    # Cleanup Build Dependencies
+    apt-get purge -y $BUILD_DEPS; \
+    apt-get autoremove -y; \
+    apt-get clean -y; \
+    rm -rf /var/lib/apt/lists/* /var/cache/* /tmp/* /var/log/* ~/.cache; \
+    # Prerequisites
     mkdir -p /dawn-of-light/config /dawn-of-light/database
 
 COPY /scripts /
