@@ -3,15 +3,15 @@
 ## Detect Memory Constraints
 CONTAINER_MEMORY_CONSTRAINTS="$(cat /sys/fs/cgroup/memory/memory.limit_in_bytes)"
 
-if [ "${DOL_MEMORY_LIMIT:--1}" -gt "$CONTAINER_MEMORY_CONSTRAINTS" ]; then DOL_MEMORY_LIMIT=$CONTAINER_MEMORY_CONSTRAINTS; fi
+if [ "${DOL_MEMORY_LIMIT:-0}" -gt "$CONTAINER_MEMORY_CONSTRAINTS" ]; then DOL_MEMORY_LIMIT=$CONTAINER_MEMORY_CONSTRAINTS; fi
 
 ## Create Config file if doesn't exists
 if [ ! -f "config/serverconfig.xml" ]; then
 
     case ${DOL_DB_TYPE:-SQLITE} in
         "SQLITE")
-	    if [ "${DOL_SQLITE_CACHE:--1}" -gt $(( CONTAINER_MEMORY_CONSTRAINTS / 2 )) ]; then DOL_SQLITE_CACHE=$(( CONTAINER_MEMORY_CONSTRAINTS / 2 )); fi
-	    if [ "${DOL_SQLITE_CACHE}x" != "x" ]; then DOL_SQLITE_CACHE_CONFIG="Cache Size=${DOL_SQLITE_CACHE}"; fi
+	    if [ "${DOL_SQLITE_CACHE:-0}" -gt $(( CONTAINER_MEMORY_CONSTRAINTS / 2 / 1024 )) ]; then DOL_SQLITE_CACHE=$(( CONTAINER_MEMORY_CONSTRAINTS / 2 / 1024 )); fi
+	    if [ "${DOL_SQLITE_CACHE}x" != "x" ]; then DOL_SQLITE_CACHE_CONFIG="Cache Size=-${DOL_SQLITE_CACHE}"; fi
             DATABASE_CONNECTIONSTRING="Data Source=$(pwd)/database/dol.sqlite3.db;Version=3;${DOL_SQLITE_CACHE_CONFIG}Pooling=False;Journal Mode=Off;Synchronous=Off;Foreign Keys=True;Default Timeout=60"
         ;;
         "MYSQL")

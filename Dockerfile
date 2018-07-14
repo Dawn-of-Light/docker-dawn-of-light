@@ -23,7 +23,7 @@ RUN set -ex; \
     apk add --no-cache --update \
         mono@testing tmux; \
     apk add --no-cache --update --virtual .build_dependencies \
-        curl unzip ca-certificates; \
+        curl jq unzip ca-certificates; \
     update-ca-certificates; \
     DOL_LATEST_RELEASE_URL=$(curl -s "$DOL_GITHUB_API_URL" |  jq -r ".assets[] | select(.name == \"$DOL_ARCHIVE_NAME\") | .browser_download_url"); \
     curl -L -o /DOLServer_linux_net45_Release.zip "$DOL_LATEST_RELEASE_URL"; \
