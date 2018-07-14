@@ -1,10 +1,10 @@
 #!/bin/bash
 
-# $IMAGE_NAME var is injected into the build so the tag is correct. 
-
 SOURCE_COMMIT="$(git rev-parse --short HEAD)"
 
-BUILD_VERSION="$(curl -s "https://api.github.com/repos/Dawn-of-Light/DOLSharp/releases/latest" | sed -n 's/.*"tag_name": "\([0-9.]\+\)".*/\1/p')"
+# Retrieve latest DOL Release
+curl -L -o jq https://github.com/stedolan/jq/releases/download/jq-1.5/jq-linux64 && chmod +x jq
+BUILD_VERSION="$(curl -s "https://api.github.com/repos/Dawn-of-Light/DOLSharp/releases/latest" | ./jq -r '.tag_name')"
 
 echo "Hook Build with values: VCS_REF:$SOURCE_COMMIT, BUILD_VERSION:$BUILD_VERSION, IMAGE_NAME:$IMAGE_NAME"
 docker build \
