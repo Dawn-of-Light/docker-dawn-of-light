@@ -11,7 +11,7 @@ Docker Image for Dawn of Light Server
 version: '2'
 services:
   dawn-of-light-sandbox:
-    image: dawn-of-light/dolsharp:sandbox
+    image: dawnoflight/dolsharp:sandbox
     container_name: dol-sandbox-container
     restart: always
     mem_limit: 2048M

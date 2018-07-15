@@ -12,3 +12,4 @@ services:
      - 10400:10400/udp
     tmpfs:
      - /dawn-of-light/database
+     - /dawn-of-light/logs
