@@ -1,0 +1,14 @@
+version: '2'
+services:
+  dawn-of-light:
+    mem_limit: 2048M
+    build: ./
+    restart: always
+    stop_grace_period: 35s
+    environment:
+      DOL_MEMORY_LIMIT: 2147483648
+    ports:
+     - 10300:10300/tcp
+     - 10400:10400/udp
+    tmpfs:
+     - /dawn-of-light/database

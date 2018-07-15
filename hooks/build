@@ -1,0 +1,9 @@
+#!/bin/bash
+
+SOURCE_COMMIT="$(git rev-parse --short HEAD)"
+
+echo "Hook Build with values: VCS_REF:$SOURCE_COMMIT, IMAGE_NAME:$IMAGE_NAME"
+docker build \
+  --build-arg VCS_REF="$SOURCE_COMMIT" \
+  --build-arg BUILD_DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ") \
+-t $IMAGE_NAME .
