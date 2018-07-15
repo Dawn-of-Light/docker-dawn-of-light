@@ -2,7 +2,7 @@ FROM mono:latest
 
 ARG BUILD_DATE=now
 ARG VCS_REF=local
-ARG BUILD_VERSION=dev
+ARG BUILD_VERSION=latest
 
 LABEL org.label-schema.build-date=$BUILD_DATE \
       org.label-schema.version=$BUILD_VERSION \
