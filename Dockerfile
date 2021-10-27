@@ -16,7 +16,7 @@ LABEL org.label-schema.build-date=$BUILD_DATE \
 
 RUN set -ex; \
     # Set Constants
-    DOL_ARCHIVE_NAME="DOLServer_linux_net45_Release.zip"; \
+    DOL_ARCHIVE_NAME="DOLServer_Net5_Alpha_Debug.zip"; \
     DOL_GITHUB_API_URL="https://api.github.com/repos/Dawn-of-Light/DOLSharp/releases/latest"; \
     [ "$BUILD_VERSION" != "latest" ] && DOL_GITHUB_API_URL="https://api.github.com/repos/Dawn-of-Light/DOLSharp/releases/tags/$BUILD_VERSION"; \
     # Install Build Dependencies
@@ -29,7 +29,7 @@ RUN set -ex; \
     apt-get install --no-install-recommends -y $BUILD_DEPS tmux; \
     # Get DOL Release
     DOL_LATEST_RELEASE_URL=$(curl -s "$DOL_GITHUB_API_URL" |  jq -r ".assets[] | select(.name == \"$DOL_ARCHIVE_NAME\") | .browser_download_url"); \
-    curl -L -o /DOLServer_linux_net45_Release.zip "$DOL_LATEST_RELEASE_URL"; \
+    curl -L -o "/$DOL_ARCHIVE_NAME" "$DOL_LATEST_RELEASE_URL"; \
     unzip "/$DOL_ARCHIVE_NAME" -d /dawn-of-light; \
     # Cleanup Download
     rm -f "/$DOL_ARCHIVE_NAME"; \
