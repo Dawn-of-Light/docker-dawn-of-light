@@ -57,11 +57,11 @@ EOT
 
 fi
 
-## Setup Mono Options
+## Setup Dotnet Options
 export LANG=en_US.CP1252
 export LC_COLLATE=C
-export MONO_GC_PARAMS="concurrent-sweep"
-if [ "${DOL_MEMORY_LIMIT}x" != "x" ]; then MONO_GC_PARAMS="${MONO_GC_PARAMS},max-heap-size=${DOL_MEMORY_LIMIT}"; fi
+export COMPlus_gcConcurrent="1"
+if [ -n "${DOL_MEMORY_LIMIT}" ]; then export COMPlus_GCHeapHardLimit="${DOL_MEMORY_LIMIT}"; fi
 
 trap quit_server HUP INT QUIT TERM
 
@@ -69,7 +69,7 @@ quit_server() {
     echo "Stopping DOL Server..."
     tmux send-keys -t dolserver "exit" Enter
     MAX_WAIT=30
-    while [ "$MAX_WAIT" -gt 0 ] && [ -n "$(pgrep -f mono-sgen)" ]; do
+    while [ "$MAX_WAIT" -gt 0 ] && [ -n "$(pgrep -f DOLServer)" ]; do
         echo "Waiting for DOL Server to stop..."
 	sleep 1
 	MAX_WAIT=$(( MAX_WAIT - 1 ))
@@ -82,7 +82,7 @@ quit_server() {
 echo "Starting DOL Server..."
 
 mkfifo /tmp/DOLServer.pipe
-tmux new-session -s dolserver -d 'mono-sgen --server DOLServer.exe' \; pipe-pane 'cat >> /tmp/DOLServer.pipe'
+tmux new-session -s dolserver -d './DOLServer.exe' \; pipe-pane 'cat >> /tmp/DOLServer.pipe'
 cat /tmp/DOLServer.pipe &
 wait
 
