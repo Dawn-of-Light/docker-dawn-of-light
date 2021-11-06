@@ -82,7 +82,7 @@ quit_server() {
 echo "Starting DOL Server..."
 
 mkfifo /tmp/DOLServer.pipe
-tmux new-session -s dolserver -d './DOLServer.exe' \; pipe-pane 'cat >> /tmp/DOLServer.pipe'
+tmux new-session -s dolserver -d 'dotnet DOLServer.dll' \; pipe-pane 'cat >> /tmp/DOLServer.pipe'
 cat /tmp/DOLServer.pipe &
 wait
 
